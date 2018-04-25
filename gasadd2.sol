@@ -62,8 +62,8 @@ contract token {
         totalSupply = initialSupply * 10 ** uint256(decimals);    //以太币是10^18，后面18个0，所以默认decimals是18
 
         //给指定帐户初始化代币总量，初始化用于奖励合约创建者
-        //balanceOf[msg.sender] = totalSupply;
-        balanceOf[this] = totalSupply;
+        balanceOf[msg.sender] = totalSupply;
+        //balanceOf[this] = totalSupply;
 
         name = tokenName;
         symbol = tokenSymbol;
