@@ -135,7 +135,8 @@ contract Ownable {
 contract ERC20Basic {
   function totalSupply() public view returns (uint256);
   function balanceOf(address who) public view returns (uint256);
-  function transfer(address to, uint256 value) public returns (bool);
+  // function transfer(address to, uint256 value) public returns (bool);
+  function transfer(address to, uint256 value) public;
   event Transfer(address indexed from, address indexed to, uint256 value);
 }
 
@@ -174,7 +175,7 @@ contract AirDrop is Ownable {
 
   function batchTransferToken(address _token_address, address[] _receivers, uint256[] _amounts) public onlyOwner returns (bool) {
     require(_token_address != address(0));
-    require(_receivers.length > 0 && _receivers.length <= 1024);
+    require(_receivers.length > 0 && _receivers.length <= 256);
     require(_receivers.length == _amounts.length);
 
     ERC20 token = ERC20(_token_address);
@@ -183,14 +184,14 @@ contract AirDrop is Ownable {
     for (uint i = 0; i < _receivers.length; i++) {
       require(_receivers[i] != address(0));
       require(_amounts[i] > 0);
-      require(token.transfer(_receivers[i], _amounts[i]));
+      token.transfer(_receivers[i], _amounts[i]);
     }
 
     return true;
   }
 
   function batchTransferEther(address[] _receivers, uint256[] _amounts) public payable onlyOwner returns (bool) {
-    require(_receivers.length > 0 && _receivers.length <= 1024);
+    require(_receivers.length > 0 && _receivers.length <= 256);
     require(_receivers.length == _amounts.length);
     require(msg.value > 0 && _getTotalSendingAmount(_amounts) <= msg.value);
 
@@ -206,7 +207,7 @@ contract AirDrop is Ownable {
   function withdrawToken(address _token_address, address _receiver) public onlyOwner returns (bool) {
     ERC20 token = ERC20(_token_address);
     require(_receiver != address(0) && token.balanceOf(this) > 0);
-    require(token.transfer(_receiver, token.balanceOf(this)));
+    token.transfer(_receiver, token.balanceOf(this));
     return true;
   }
 
